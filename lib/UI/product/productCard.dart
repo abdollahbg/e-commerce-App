@@ -33,7 +33,7 @@ class ProductCard extends StatelessWidget {
                 aspectRatio: 1,
                 child: Image.network(
                   imageUrl,
-                  fit: BoxFit.contain, // لا يقطع أي جزء من الصورة
+                  fit: BoxFit.contain,
                   loadingBuilder: (context, child, progress) {
                     if (progress == null) return child;
                     return const Center(child: CircularProgressIndicator());
