@@ -12,10 +12,10 @@ class Homescreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
       builder: (context, state) {
-        String userName = 'Guest'; // اسم افتراضي
+        String userName = 'Guest';
 
         if (state is LoginSuccess) {
-          userName = state.user.name.fullName; // أو fullName حسب ما تريد
+          userName = state.user.name.fullName;
         }
 
         return DefaultTabController(
@@ -23,14 +23,15 @@ class Homescreen extends StatelessWidget {
           child: Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
+              toolbarHeight: 80,
               backgroundColor: Colors.white,
-              elevation: 1,
+
               shadowColor: Colors.grey[100],
               title: Row(
                 children: [
                   Container(
-                    width: 40,
-                    height: 40,
+                    width: 60,
+                    height: 60,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.grey[300]!, width: 1),
@@ -39,7 +40,7 @@ class Homescreen extends StatelessWidget {
                       child: Icon(
                         Icons.person,
                         color: Colors.grey[600],
-                        size: 20,
+                        size: 40,
                       ),
                     ),
                   ),
@@ -51,14 +52,14 @@ class Homescreen extends StatelessWidget {
                         Text(
                           'Hello,',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 18,
                             color: Colors.grey[600],
                           ),
                         ),
                         Text(
                           userName,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 23,
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                             overflow: TextOverflow.ellipsis,
@@ -74,13 +75,13 @@ class Homescreen extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   child: CircleAvatar(
                     backgroundColor: Colors.grey[100],
-                    radius: 20,
+                    radius: 25,
                     child: IconButton(
                       onPressed: () {},
                       icon: Icon(
                         Icons.search,
                         color: Colors.grey[700],
-                        size: 20,
+                        size: 25,
                       ),
                       padding: EdgeInsets.zero,
                     ),
@@ -92,13 +93,13 @@ class Homescreen extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         backgroundColor: Colors.grey[100],
-                        radius: 20,
+                        radius: 25,
                         child: IconButton(
                           onPressed: () {},
                           icon: Icon(
                             Icons.notifications_none,
                             color: Colors.grey[700],
-                            size: 20,
+                            size: 25,
                           ),
                           padding: EdgeInsets.zero,
                         ),

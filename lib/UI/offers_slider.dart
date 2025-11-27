@@ -32,7 +32,7 @@ class _OffersSliderState extends State<OffersSlider> {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20), // حواف مستديرة
+                  borderRadius: BorderRadius.circular(20),
                   child: Image.network(widget.images[index], fit: BoxFit.cover),
                 ),
               );

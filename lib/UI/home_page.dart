@@ -82,7 +82,7 @@ class HomePage extends StatelessWidget {
               return const Text("Error");
             },
           ),
-          const SizedBox(height: 20), // مسافة أسفل الصفحة
+          const SizedBox(height: 20),
         ],
       ),
     );

@@ -84,22 +84,17 @@ class LoginScreen extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
-        Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: _buildSocialButton(
-                icon: 'assets/images/google.png',
-                text: 'Sign in with Google',
-                isActive: false,
-              ),
+            _buildSocialButton(
+              icon: 'assets/google.png',
+              text: 'Sign in with Google',
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildSocialButton(
-                icon: 'assets/images/facebook.png',
-                text: 'Sign in with Facebook',
-                isActive: true,
-              ),
+            const SizedBox(height: 16),
+            _buildSocialButton(
+              icon: 'assets/facebook.png',
+              text: 'Sign in with Facebook',
             ),
           ],
         ),
@@ -107,34 +102,22 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSocialButton({
-    required String icon,
-    required String text,
-    required bool isActive,
-  }) {
+  Widget _buildSocialButton({required String icon, required String text}) {
     return Container(
-      height: 50,
+      height: 60,
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border.all(color: isActive ? Colors.blue : Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(8),
-        color: isActive ? Colors.blue[50] : Colors.transparent,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Colors.grey[300]!),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon.contains('google') ? Icons.g_mobiledata : Icons.facebook,
-            color: isActive ? Colors.blue : Colors.grey,
-            size: 20,
-          ),
+          Image.asset(icon, width: 24, height: 24),
           const SizedBox(width: 8),
           Text(
             text,
-            style: TextStyle(
-              color: isActive ? Colors.blue : Colors.grey[600],
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -258,7 +241,7 @@ class _LoginFormState extends State<_LoginForm> {
             child: Text(
               'Forget Password?',
               style: TextStyle(
-                color: Colors.blue[600],
+                color: Colors.indigo,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -273,11 +256,11 @@ class _LoginFormState extends State<_LoginForm> {
             return ElevatedButton(
               onPressed: isLoading ? null : _login,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[600],
+                backgroundColor: Colors.indigo,
                 foregroundColor: Colors.white,
                 minimumSize: Size(double.infinity, 56),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 elevation: 0,
               ),
@@ -293,7 +276,7 @@ class _LoginFormState extends State<_LoginForm> {
                   : Text(
                       'Sign In',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
