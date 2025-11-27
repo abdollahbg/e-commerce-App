@@ -1,6 +1,6 @@
+import 'package:ecommerce_app/UI/home/homeScreen.dart';
 import 'package:ecommerce_app/cubit/cubit/login_cubit.dart';
 import 'package:ecommerce_app/cubit/cubit/login_state.dart';
-import 'package:ecommerce_app/UI/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

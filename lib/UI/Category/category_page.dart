@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/UI/categoryContainer.dart';
+import 'package:ecommerce_app/UI/Category/categoryContainer.dart';
 import 'package:flutter/material.dart';
 
 List<CategoryContainer> categories = [

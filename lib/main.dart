@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/UI/login_screen.dart';
+import 'package:ecommerce_app/UI/login/login_screen.dart';
 import 'package:ecommerce_app/cubit/product_cubit.dart';
 import 'package:ecommerce_app/cubit/cubit/login_cubit.dart';
 import 'package:ecommerce_app/services/Login_service.dart';

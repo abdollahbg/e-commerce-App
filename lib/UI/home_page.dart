@@ -1,4 +1,4 @@
-import 'package:ecommerce_app/UI/offers_slider.dart';
+import 'package:ecommerce_app/UI/product/offers_slider.dart';
 import 'package:ecommerce_app/UI/product/productCard.dart';
 import 'package:ecommerce_app/cubit/product_cubit.dart';
 import 'package:flutter/material.dart';
