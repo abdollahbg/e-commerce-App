@@ -11,7 +11,4 @@ final class CartInitial extends CartState {}
 
 class AddinCart extends CartState {}
 
-class DeleteFromCart extends CartState {
-  @override
-  List<Object> get props => [];
-}
+class DeleteFromCart extends CartState {}

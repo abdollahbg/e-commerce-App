@@ -8,13 +8,19 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit() : super(CartInitial());
 
-  void addinCart(ProductModel product) {
-    Cart.products.add(product);
+  void addProductToCart(ProductModel product) {
+    int index = Cart.products.indexWhere((element) => element.id == product.id);
+
+    if (index == -1) {
+      Cart.products.add(product);
+    } else {
+      Cart.products[index].quantity += product.quantity;
+    }
     emit(AddinCart());
   }
 
-  void deletefromCart(int id) {
-    Cart.products.remove(id);
+  void deleteFromCart(int id) {
+    Cart.products.removeWhere((element) => element.id == id);
     emit(DeleteFromCart());
   }
 }

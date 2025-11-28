@@ -67,6 +67,8 @@ class HomePage extends StatelessWidget {
                         title: product.title,
                         price: product.price,
                         imageUrl: product.imageUrl,
+                        description: product.description,
+                        category: product.category,
                       );
                     },
                   ),
