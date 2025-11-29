@@ -12,3 +12,5 @@ final class CartInitial extends CartState {}
 class AddinCart extends CartState {}
 
 class DeleteFromCart extends CartState {}
+
+class UpdateCart extends CartState {}

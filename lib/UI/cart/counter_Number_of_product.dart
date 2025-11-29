@@ -1,14 +1,18 @@
+import 'package:ecommerce_app/cubit/cubit/cart_cubit.dart';
 import 'package:ecommerce_app/models/product_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// تم إزالة 'must_be_immutable' لأننا سنستخدم الحالة في الـ State
 class CounterNumberOfProduct extends StatefulWidget {
-  final int initialCount;
   final ProductModel product;
+  final bool isInCartScreen;
+  final Function(int)? onCountChanged; // أضف هذا
+
   const CounterNumberOfProduct({
     super.key,
-    required this.initialCount,
     required this.product,
+    this.isInCartScreen = false,
+    this.onCountChanged, // أضف هذا
   });
 
   @override
@@ -16,21 +20,52 @@ class CounterNumberOfProduct extends StatefulWidget {
 }
 
 class _CounterNumberOfProductState extends State<CounterNumberOfProduct> {
+  late int count;
+
   @override
   void initState() {
     super.initState();
+    // البدء بالكمية الحالية من السلة
+    count = context.read<CartCubit>().getProductCountInCart(widget.product.id);
+
+    // إذا كان في شاشة المنتج والمنتج غير موجود في السلة، نعرض 1
+    if (!widget.isInCartScreen && count == 0) {
+      count = 1;
+    }
   }
 
   void _incrementCount() {
+    final newCount = count + 1;
     setState(() {
-      widget.product.incrementQuantity();
+      count = newCount;
     });
+
+    // استدعاء callback إذا كان موجوداً
+    widget.onCountChanged?.call(newCount);
+
+    // تحديث الـ Cubit مباشرة إذا كان في شاشة السلة
+    if (widget.isInCartScreen) {
+      context.read<CartCubit>().updateProductCount(widget.product.id, newCount);
+    }
   }
 
   void _decrementCount() {
-    setState(() {
-      widget.product.decrementQuantity();
-    });
+    if (count > 1) {
+      final newCount = count - 1;
+      setState(() {
+        count = newCount;
+      });
+
+      // استدعاء callback إذا كان موجوداً
+      widget.onCountChanged?.call(newCount);
+
+      if (widget.isInCartScreen) {
+        context.read<CartCubit>().updateProductCount(
+          widget.product.id,
+          newCount,
+        );
+      }
+    }
   }
 
   Widget _buildCounterButton({
@@ -74,25 +109,17 @@ class _CounterNumberOfProductState extends State<CounterNumberOfProduct> {
             icon: Icons.remove,
             onPressed: _decrementCount,
             color: buttonColor,
-            isInactive: widget.product.quantity == 1,
+            isInactive: count <= 1,
           ),
-
           const SizedBox(width: 10),
-
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Text(
-              '${widget.product.quantity}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+              '$count',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
-
           const SizedBox(width: 10),
-
           _buildCounterButton(
             icon: Icons.add,
             onPressed: _incrementCount,

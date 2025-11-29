@@ -23,7 +23,7 @@ class ProductsRepository {
 
       List<dynamic> jsonList = response.data;
 
-      return jsonList.map((json) => ProductModel.fromjson(json)).toList();
+      return jsonList.map((json) => ProductModel.fromJson(json)).toList();
     } on DioException catch (e) {
       throw Exception(errorHandlingMessage(e));
     } catch (e) {

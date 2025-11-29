@@ -15,6 +15,28 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   bool readmore = false;
+  int currentCount = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateCurrentCount();
+  }
+
+  void _updateCurrentCount() {
+    final cartCubit = context.read<CartCubit>();
+    final cartCount = cartCubit.getProductCountInCart(widget.product.id);
+
+    setState(() {
+      currentCount = cartCount > 0 ? cartCount : 1;
+    });
+  }
+
+  void _onCountChanged(int newCount) {
+    setState(() {
+      currentCount = newCount;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +58,27 @@ class _ProductScreenState extends State<ProductScreen> {
       ),
       body: Stack(
         children: [
-          // الخلفية
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             height: screenHeight * 0.46,
-            child: Image.network(widget.product.imageUrl, fit: BoxFit.contain),
+            child: Image.network(
+              widget.product.imageUrl,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[200],
+                  child: const Icon(
+                    Icons.broken_image,
+                    size: 50,
+                    color: Colors.grey,
+                  ),
+                );
+              },
+            ),
           ),
 
-          // طبقة تغميق
           Positioned(
             top: 0,
             left: 0,
@@ -149,7 +182,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           );
                         },
                       ),
-                      Divider(),
+                      const Divider(),
 
                       const SizedBox(height: 10),
                       Row(
@@ -157,8 +190,9 @@ class _ProductScreenState extends State<ProductScreen> {
                         children: [
                           Text('choose amount', style: TextStyle(fontSize: 18)),
                           CounterNumberOfProduct(
-                            initialCount: widget.product.quantity,
                             product: widget.product,
+                            isInCartScreen: false,
+                            onCountChanged: _onCountChanged, // الآن سيعمل
                           ),
                         ],
                       ),
@@ -167,7 +201,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "\$${widget.product.price}",
+                            "\$${widget.product.price.toStringAsFixed(2)}",
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -185,11 +219,14 @@ class _ProductScreenState extends State<ProductScreen> {
                             onPressed: () {
                               context.read<CartCubit>().addProductToCart(
                                 widget.product,
+                                currentCount,
                               );
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Product added to cart"),
-                                  duration: Duration(seconds: 1),
+                                SnackBar(
+                                  content: Text(
+                                    "Added $currentCount ${currentCount == 1 ? 'item' : 'items'} to cart",
+                                  ),
+                                  duration: const Duration(seconds: 2),
                                 ),
                               );
                             },
