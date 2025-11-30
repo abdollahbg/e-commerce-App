@@ -1,6 +1,7 @@
 import 'package:ecommerce_app/UI/login/login_screen.dart';
 import 'package:ecommerce_app/cubit/cubit/cart_cubit.dart';
 import 'package:ecommerce_app/cubit/cubit/counter_cubit.dart';
+import 'package:ecommerce_app/cubit/cubit/order_cubit.dart';
 import 'package:ecommerce_app/cubit/product_cubit.dart';
 import 'package:ecommerce_app/cubit/cubit/login_cubit.dart';
 import 'package:ecommerce_app/services/Login_service.dart';
@@ -26,6 +27,7 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider(create: (context) => CartCubit()),
         BlocProvider(create: (context) => CounterCubit(initialCount: 1)),
+        BlocProvider(create: (context) => OrderCubit()),
       ],
       child: MaterialApp(
         title: 'Ecommerce App',

@@ -8,7 +8,6 @@ part 'cart_state.dart';
 class CartCubit extends Cubit<CartState> {
   CartCubit() : super(CartInitial());
 
-  // دالة جديدة للحصول على الكمية الحالية للمنتج في السلة
   int getProductCountInCart(int productId) {
     try {
       final product = Cart.products.firstWhere(
@@ -26,16 +25,15 @@ class CartCubit extends Cubit<CartState> {
     );
 
     if (existingProductIndex == -1) {
-      // المنتج غير موجود في السلة - نضيفه جديداً
       final newProduct = product.copyWith(ItemCount: count);
       Cart.products.add(newProduct);
     } else {
-      // المنتج موجود - نضيف الكمية الجديدة إلى الكمية الحالية
       final currentCount = Cart.products[existingProductIndex].ItemCount;
       Cart.products[existingProductIndex] = Cart.products[existingProductIndex]
           .copyWith(ItemCount: currentCount + count);
     }
     emit(AddinCart());
+    emit(CartUpdated());
   }
 
   void updateProductCount(int productId, int newCount) {
@@ -45,14 +43,12 @@ class CartCubit extends Cubit<CartState> {
 
     if (existingProductIndex != -1) {
       if (newCount <= 0) {
-        // إذا كانت الكمية صفر أو أقل، نزيل المنتج من السلة
         deleteFromCart(productId);
       } else {
-        // نحدث الكمية فقط
         Cart.products[existingProductIndex] = Cart
             .products[existingProductIndex]
             .copyWith(ItemCount: newCount);
-        emit(UpdateCart());
+        emit(CartUpdated());
       }
     }
   }
@@ -60,5 +56,12 @@ class CartCubit extends Cubit<CartState> {
   void deleteFromCart(int id) {
     Cart.products.removeWhere((element) => element.id == id);
     emit(DeleteFromCart());
+    emit(CartUpdated());
+  }
+
+  void clearCart() {
+    Cart.products.clear();
+    emit(ClearCart());
+    emit(CartUpdated());
   }
 }

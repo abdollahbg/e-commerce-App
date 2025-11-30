@@ -14,9 +14,9 @@ class CounterInitial extends CounterState {
 }
 
 class CounterIncremented extends CounterState {
-  const CounterIncremented(int newCount) : super(newCount);
+  const CounterIncremented(super.newCount);
 }
 
 class CounterDecremented extends CounterState {
-  const CounterDecremented(int newCount) : super(newCount);
+  const CounterDecremented(super.newCount);
 }

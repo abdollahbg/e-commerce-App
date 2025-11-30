@@ -4,7 +4,7 @@ sealed class CartState extends Equatable {
   const CartState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class CartInitial extends CartState {}
@@ -13,4 +13,6 @@ class AddinCart extends CartState {}
 
 class DeleteFromCart extends CartState {}
 
-class UpdateCart extends CartState {}
+class CartUpdated extends CartState {}
+
+class ClearCart extends CartState {}

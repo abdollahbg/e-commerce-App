@@ -17,11 +17,17 @@ class _ProductcardforcartState extends State<Productcardforcart> {
   Widget build(BuildContext context) {
     return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
-        // الحصول على الكمية المحدثة مباشرة من الـ Cubit
-        final currentCount = context.read<CartCubit>().getProductCountInCart(
+        // BlocBuilder يراقب أي تغيير في CartCubit
+        final currentCount = context.watch<CartCubit>().getProductCountInCart(
           widget.product.id,
         );
-        double totalPrice = widget.product.price * currentCount;
+
+        // إذا الكمية صفر نخفي الكارد
+        if (currentCount == 0) {
+          return const SizedBox.shrink();
+        }
+
+        final totalPrice = widget.product.price * currentCount;
 
         return Column(
           children: [
@@ -30,74 +36,128 @@ class _ProductcardforcartState extends State<Productcardforcart> {
               elevation: 0,
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                padding: const EdgeInsets.all(12),
+                child: Stack(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: SizedBox(
-                        width: 70,
-                        height: 70,
-                        child: Image.network(
-                          widget.product.imageUrl,
-                          fit: BoxFit.fitHeight,
-                          loadingBuilder: (context, child, progress) {
-                            if (progress == null) return child;
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey[200],
-                              child: const Icon(
-                                Icons.broken_image,
-                                size: 50,
-                                color: Colors.grey,
+                    // Main content row
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Product Image
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: Image.network(
+                              widget.product.imageUrl,
+                              fit: BoxFit.fitHeight,
+                              loadingBuilder: (context, child, progress) {
+                                if (progress == null) return child;
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[200],
+                                  child: const Icon(
+                                    Icons.broken_image,
+                                    size: 30,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+
+                        // Product Details and Counter
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.product.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
+                              const SizedBox(height: 8),
+                              CounterNumberOfProduct(
+                                product: widget.product,
+                                isInCartScreen: true,
+                                onCountChanged: (newCount) {
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const Spacer(),
+                      ],
+                    ),
+
+                    // Delete Button
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          iconSize: 16,
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            context.read<CartCubit>().deleteFromCart(
+                              widget.product.id,
                             );
                           },
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                    // Price - Bottom Right
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
                         children: [
-                          Text(
-                            widget.product.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 16,
+                          const Text(
+                            '\$',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 6),
-                          CounterNumberOfProduct(
-                            product: widget.product,
-                            isInCartScreen: true,
-                            onCountChanged: (newCount) {
-                              setState(() {
-                                totalPrice = widget.product.price * newCount;
-                              });
-                            },
+                          Text(
+                            totalPrice.toStringAsFixed(2),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      '\$${totalPrice.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],

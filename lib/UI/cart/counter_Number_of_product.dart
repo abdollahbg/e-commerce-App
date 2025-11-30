@@ -6,13 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CounterNumberOfProduct extends StatefulWidget {
   final ProductModel product;
   final bool isInCartScreen;
-  final Function(int)? onCountChanged; // أضف هذا
+  final Function(int)? onCountChanged;
 
   const CounterNumberOfProduct({
     super.key,
     required this.product,
     this.isInCartScreen = false,
-    this.onCountChanged, // أضف هذا
+    this.onCountChanged,
   });
 
   @override
@@ -25,10 +25,9 @@ class _CounterNumberOfProductState extends State<CounterNumberOfProduct> {
   @override
   void initState() {
     super.initState();
-    // البدء بالكمية الحالية من السلة
+
     count = context.read<CartCubit>().getProductCountInCart(widget.product.id);
 
-    // إذا كان في شاشة المنتج والمنتج غير موجود في السلة، نعرض 1
     if (!widget.isInCartScreen && count == 0) {
       count = 1;
     }
@@ -40,10 +39,8 @@ class _CounterNumberOfProductState extends State<CounterNumberOfProduct> {
       count = newCount;
     });
 
-    // استدعاء callback إذا كان موجوداً
     widget.onCountChanged?.call(newCount);
 
-    // تحديث الـ Cubit مباشرة إذا كان في شاشة السلة
     if (widget.isInCartScreen) {
       context.read<CartCubit>().updateProductCount(widget.product.id, newCount);
     }
@@ -56,7 +53,6 @@ class _CounterNumberOfProductState extends State<CounterNumberOfProduct> {
         count = newCount;
       });
 
-      // استدعاء callback إذا كان موجوداً
       widget.onCountChanged?.call(newCount);
 
       if (widget.isInCartScreen) {
@@ -96,37 +92,60 @@ class _CounterNumberOfProductState extends State<CounterNumberOfProduct> {
     final Color? backgroundColor = Colors.grey[200];
     const Color buttonColor = Colors.white;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: backgroundColor,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildCounterButton(
-            icon: Icons.remove,
-            onPressed: _decrementCount,
-            color: buttonColor,
-            isInactive: count <= 1,
-          ),
-          const SizedBox(width: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Text(
-              '$count',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    return BlocListener<CartCubit, dynamic>(
+      listener: (context, state) {
+        // When cart state changes, re-read the count for this product.
+        final newCount = context.read<CartCubit>().getProductCountInCart(
+          widget.product.id,
+        );
+
+        // If not in cart screen, keep the default minimum 1 when product not in cart.
+        final effectiveNewCount = (!widget.isInCartScreen && newCount == 0)
+            ? 1
+            : newCount;
+
+        if (effectiveNewCount != count) {
+          setState(() {
+            count = effectiveNewCount;
+          });
+          widget.onCountChanged?.call(count);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: backgroundColor,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildCounterButton(
+              icon: Icons.remove,
+              onPressed: _decrementCount,
+              color: buttonColor,
+              isInactive: count <= 1,
             ),
-          ),
-          const SizedBox(width: 10),
-          _buildCounterButton(
-            icon: Icons.add,
-            onPressed: _incrementCount,
-            color: buttonColor,
-            isInactive: false,
-          ),
-        ],
+            const SizedBox(width: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(
+                '$count',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            _buildCounterButton(
+              icon: Icons.add,
+              onPressed: _incrementCount,
+              color: buttonColor,
+              isInactive: false,
+            ),
+          ],
+        ),
       ),
     );
   }
