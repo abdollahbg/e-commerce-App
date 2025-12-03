@@ -6,11 +6,13 @@ import 'package:equatable/equatable.dart';
 part 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
+  Cart cart = Cart();
+
   CartCubit() : super(CartInitial());
 
   int getProductCountInCart(int productId) {
     try {
-      final product = Cart.products.firstWhere(
+      final product = cart.products.firstWhere(
         (element) => element.id == productId,
       );
       return product.ItemCount;
@@ -20,24 +22,23 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void addProductToCart(ProductModel product, int count) {
-    final existingProductIndex = Cart.products.indexWhere(
+    final existingProductIndex = cart.products.indexWhere(
       (element) => element.id == product.id,
     );
 
     if (existingProductIndex == -1) {
       final newProduct = product.copyWith(ItemCount: count);
-      Cart.products.add(newProduct);
+      cart.products.add(newProduct);
     } else {
-      final currentCount = Cart.products[existingProductIndex].ItemCount;
-      Cart.products[existingProductIndex] = Cart.products[existingProductIndex]
+      final currentCount = cart.products[existingProductIndex].ItemCount;
+      cart.products[existingProductIndex] = cart.products[existingProductIndex]
           .copyWith(ItemCount: currentCount + count);
     }
-    emit(AddinCart());
     emit(CartUpdated());
   }
 
   void updateProductCount(int productId, int newCount) {
-    final existingProductIndex = Cart.products.indexWhere(
+    final existingProductIndex = cart.products.indexWhere(
       (element) => element.id == productId,
     );
 
@@ -45,7 +46,7 @@ class CartCubit extends Cubit<CartState> {
       if (newCount <= 0) {
         deleteFromCart(productId);
       } else {
-        Cart.products[existingProductIndex] = Cart
+        cart.products[existingProductIndex] = cart
             .products[existingProductIndex]
             .copyWith(ItemCount: newCount);
         emit(CartUpdated());
@@ -54,14 +55,12 @@ class CartCubit extends Cubit<CartState> {
   }
 
   void deleteFromCart(int id) {
-    Cart.products.removeWhere((element) => element.id == id);
-    emit(DeleteFromCart());
+    cart.products.removeWhere((element) => element.id == id);
     emit(CartUpdated());
   }
 
   void clearCart() {
-    Cart.products.clear();
-    emit(ClearCart());
+    cart.products.clear();
     emit(CartUpdated());
   }
 }

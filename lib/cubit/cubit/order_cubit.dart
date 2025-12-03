@@ -5,11 +5,18 @@ import 'package:equatable/equatable.dart';
 
 part 'order_state.dart';
 
+int idCounter = 0;
+List<Order> orders = [];
+
 class OrderCubit extends Cubit<OrderState> {
   OrderCubit() : super(OrderInitial());
+
   void addOrder(Cart cart) {
-    Order order = Order();
-    order.cart.add(cart);
-    emit(AddOrder(order));
+    final order = Order(id: idCounter, cart: cart);
+
+    idCounter++;
+    orders.add(order);
+
+    emit(AddOrder());
   }
 }

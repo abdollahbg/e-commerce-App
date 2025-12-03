@@ -4,6 +4,7 @@ import 'package:ecommerce_app/cubit/cubit/login_cubit.dart';
 import 'package:ecommerce_app/cubit/cubit/login_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ecommerce_app/UI/Order/Orders_screen.dart';
 
 class Homescreen extends StatelessWidget {
   const Homescreen({super.key});
@@ -15,7 +16,7 @@ class Homescreen extends StatelessWidget {
         String userName = 'Guest';
 
         if (state is LoginSuccess) {
-          userName = state.user.name.fullName;
+          userName = state.user.name.firstname;
         }
 
         return DefaultTabController(
@@ -71,6 +72,30 @@ class Homescreen extends StatelessWidget {
                 ],
               ),
               actions: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey[100],
+                    radius: 25,
+
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OrdersScreen(),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.grey[700],
+                        size: 25,
+                      ),
+                    ),
+                  ),
+                ),
+
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   child: CircleAvatar(

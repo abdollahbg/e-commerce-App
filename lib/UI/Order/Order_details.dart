@@ -20,19 +20,13 @@ class OrderDetails extends StatelessWidget {
   }
 
   double get subtotal {
-    return Cart.products.fold(0.0, (sum, product) {
+    return cart.products.fold(0.0, (sum, product) {
       return sum + (product.price * product.ItemCount);
     });
   }
 
-  double get shipping {
-    return 6.0;
-  }
-
-  // حساب التوتال
-  double get total {
-    return subtotal + shipping;
-  }
+  double get shipping => 6.0;
+  double get total => subtotal + shipping;
 
   @override
   Widget build(BuildContext context) {
@@ -74,28 +68,19 @@ class OrderDetails extends StatelessWidget {
                 'Order Summary',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-
               const SizedBox(height: 16),
 
-              // Subtotal
               _buildPriceRow('Subtotal', '\$${subtotal.toStringAsFixed(2)}'),
               const SizedBox(height: 8),
-
-              // Shipping
               _buildPriceRow('Shipping', '\$${shipping.toStringAsFixed(2)}'),
               const SizedBox(height: 8),
-
-              // Divider
               const Divider(height: 20, thickness: 1),
               const SizedBox(height: 8),
-
-              // Total
               _buildPriceRow(
                 'Total amount',
                 '\$${total.toStringAsFixed(2)}',
                 isTotal: true,
               ),
-
               const SizedBox(height: 24),
 
               // Checkout Button
@@ -104,11 +89,16 @@ class OrderDetails extends StatelessWidget {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () {
-                    BlocProvider.of<OrderCubit>(context).addOrder(cart);
+                    // ⚡ هنا نستخدم الكارت الحقيقي من CartCubit
+                    final currentCart = context.read<CartCubit>().cart;
+                    context.read<OrderCubit>().addOrder(currentCart);
                     context.read<CartCubit>().clearCart();
-                    Navigator.pop(context); // إغلاق الـ BottomSheet
+
+                    Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Order placed successfully!')),
+                      const SnackBar(
+                        content: Text('Order placed successfully!'),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(

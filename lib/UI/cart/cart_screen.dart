@@ -10,13 +10,16 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cartCubit = context.read<CartCubit>(); // أخذ الكارت من الكيوبت
+
     return Scaffold(
       floatingActionButton: SizedBox(
         width: 200,
         height: 56,
         child: FloatingActionButton(
           onPressed: () {
-            OrderDetails.show(context, Cart());
+            final cart = context.read<CartCubit>().cart;
+            OrderDetails.show(context, cart);
           },
           backgroundColor: Colors.indigo,
           foregroundColor: Colors.white,
@@ -40,7 +43,7 @@ class CartScreen extends StatelessWidget {
       body: BlocConsumer<CartCubit, CartState>(
         listener: (context, state) {},
         builder: (context, state) {
-          if (Cart.products.isEmpty) {
+          if (cartCubit.cart.products.isEmpty) {
             return const Center(
               child: Text(
                 'Your cart is empty',
@@ -50,9 +53,9 @@ class CartScreen extends StatelessWidget {
           }
 
           return ListView.builder(
-            itemCount: Cart.products.length,
+            itemCount: cartCubit.cart.products.length,
             itemBuilder: (context, index) {
-              final product = Cart.products[index];
+              final product = cartCubit.cart.products[index];
               return Productcardforcart(product: product);
             },
           );
